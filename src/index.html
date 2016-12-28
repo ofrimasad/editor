@@ -172,7 +172,7 @@
     if (e.data.customerId > 0) {
       customerId = e.data.customerId;
     }
-    console.log(e.data);
+
     try {
       result = e.data;
       if (e.data.customerId != '' && e.data.customerId !== undefined && e.data.trackId) {
@@ -256,6 +256,12 @@
       if (result == 'showResult') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.showResult()
+        });
+        return;
+      }
+      if (result.hasOwnProperty("action") && result["action"] == "showResult") {
+        window.camera51Edit.zone.run(function () {
+          window.camera51Edit.showResult(e.data);
         });
         return;
       }

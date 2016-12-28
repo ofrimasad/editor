@@ -24,11 +24,6 @@ import {ShowimageService} from './showimage.service';
 import 'rxjs/Rx';
 import {WindowRef} from "../WindowRef";
 
-var greenloader = require("url?mimetype=image/png!../../assets/tools/green_pointer_6.png");
-//var greenloaderCur = require("url?mimetype=image/png!../../../assets/tools/green_pointer_6_lastone.cur");
-
-var redloader = require("url?mimetype=image/png!../../assets/tools/red_pointer_6.png");
-//var redloaderCur = require("url?mimetype=image/png!../../../assets/tools/red_pointer_6_lastone.cur");
 
 var transparentImage = require("url?mimetype=image/png!../../assets/tools/transparent_bg.png");
 
@@ -43,11 +38,11 @@ var transparentImage = require("url?mimetype=image/png!../../assets/tools/transp
     `
     .cursorRed{
       cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/red_pointer_6_lastone.cur'), auto;
-      cursor: url(` + redloader + `) 0 0, auto;
+      cursor: url( ${require('./red_pointer_6.png')} ) 0 0, auto;
     }
     .cursorGreen {
       cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/green_pointer_6_lastone.cur'), auto;
-      cursor: url(` + greenloader + `) 0 0, auto;
+      cursor: url(${require('./green_pointer_6.png')}) 0 0, auto;
     }
     .transparentBg {
         background-image: url(` + transparentImage + `);
@@ -77,7 +72,6 @@ export class EditorComponent {
   wrappermarginTop: any;
   maskHidden = false;
   imageWrapperMaxHeight;
-  greenloader = greenloader;//= require("url?mimetype=image/png!../../../assets/tools/green_pointer_6.png");
   sessionId:string;
   imagewrapperSizeWidth;
   isGreen = false;
@@ -187,7 +181,7 @@ export class EditorComponent {
       doLongZoomPressDown: (value) => this.doLongZoomPressDown(value),
       doLongZoomPressUp: (value) => this.doLongZoomPressUp(value),
       setColor: (value) => this.setColor(value),
-      showResult: () => this.showResult(),
+      showResult: (value) => this.showResult(value),
       saveImage: () => this.saveImage(),
       undo: () => this.undoEdit(),
       initApp: (value) => this.initApp(value),
@@ -1039,8 +1033,12 @@ export class EditorComponent {
   }
 
   // do matting
-  showResult() {
+  showResult(value) {
     //console.log("showResult");
+    if(value && value.hasOwnProperty("removeShadow")){
+      this.applyShadow = !value["removeShadow"];
+    }
+
     if (this.flagShowResult) {
       this.backToEdit();
       return false;
