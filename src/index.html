@@ -259,6 +259,13 @@
         });
         return;
       }
+      if (result.hasOwnProperty("action") && result["action"] == "saveImage") {
+        window.camera51Edit.zone.run(function () {
+          window.camera51Edit.saveImage(e.data);
+        });
+        return;
+      }
+
       if (result.hasOwnProperty("action") && result["action"] == "showResult") {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.showResult(e.data);

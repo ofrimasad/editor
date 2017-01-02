@@ -25,8 +25,6 @@ import 'rxjs/Rx';
 import {WindowRef} from "../WindowRef";
 
 
-var transparentImage = require("url?mimetype=image/png!../../assets/tools/transparent_bg.png");
-
 @Component({
   selector: 'editor',
 
@@ -44,8 +42,9 @@ var transparentImage = require("url?mimetype=image/png!../../assets/tools/transp
       cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/green_pointer_6_lastone.cur'), auto;
       cursor: url(${require('./green_pointer_6.png')}) 0 0, auto;
     }
+    ` + "" + `
     .transparentBg {
-        background-image: url(` + transparentImage + `);
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABYElEQVR42u3ZwQmAMBQFQRU7Sv8lpKbYQI7Coswc5d2WD0LOtdaxM+fcfh9j2L+4vw5SAsQEiAkQEyAmQEyA2P2V/+W/7l1ATICYADEBYgLEBIgJEDu9B7R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxB6KN5Q4wR/MdAAAAABJRU5ErkJggg==');
     }
     .imagewrapperBox {
       -webkit-box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;;
@@ -136,7 +135,6 @@ export class EditorComponent {
   apiTrackId:string;
   progressPercent = 0;
   showEditorView = "none";
-  transparentImageSrc = "";
   defaultSrcImageResult = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
   private imageSizeHeight: number;
   private imagewrapperSizeheight: number;
@@ -149,9 +147,6 @@ export class EditorComponent {
               private _ngZone:NgZone) {
 
     this.showWrapperShadow = true;
-
-    this.transparentImageSrc = transparentImage;
-
     //  this.showimageService.resultEditMaskImageUrl = showimageService.resultImageUrl;
     this.obj = {
       "originalImageUrl": "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
@@ -182,7 +177,7 @@ export class EditorComponent {
       doLongZoomPressUp: (value) => this.doLongZoomPressUp(value),
       setColor: (value) => this.setColor(value),
       showResult: (value) => this.showResult(value),
-      saveImage: () => this.saveImage(),
+      saveImage: (value) => this.saveImage(value),
       undo: () => this.undoEdit(),
       initApp: (value) => this.initApp(value),
       setTrackId: (value) => this.setTrackId(value),
@@ -1034,9 +1029,13 @@ export class EditorComponent {
 
   // do matting
   showResult(value) {
-    //console.log("showResult");
+
     if(value && value.hasOwnProperty("removeShadow")){
       this.applyShadow = !value["removeShadow"];
+    }
+    if(value && value.hasOwnProperty("applyTransparent")){
+      this.applyTransparent = value["applyTransparent"];
+      this.showimageService.applyTransparent = this.applyTransparent;
     }
 
     if (this.flagShowResult) {
@@ -1265,7 +1264,15 @@ export class EditorComponent {
     return true;
   }
 
-  saveImage() {
+  saveImage(value) {
+    if(value && value.hasOwnProperty("removeShadow")){
+      this.applyShadow = !value["removeShadow"];
+    }
+    if(value && value.hasOwnProperty("applyTransparent")){
+      this.applyTransparent = value["applyTransparent"];
+      this.showimageService.applyTransparent = this.applyTransparent;
+    }
+
     this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'saveImage',"customerId="+this.showimageService.customerId +",sessionId="+this.sessionId);
     this.runMatting(true);
     return false;
