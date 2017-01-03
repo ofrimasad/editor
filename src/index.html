@@ -265,6 +265,12 @@
         });
         return;
       }
+      if (result.hasOwnProperty("action") && result["action"] == "backToEdit") {
+        window.camera51Edit.zone.run(function () {
+          window.camera51Edit.backToEdit();
+        });
+        return;
+      }
 
       if (result.hasOwnProperty("action") && result["action"] == "showResult") {
         window.camera51Edit.zone.run(function () {

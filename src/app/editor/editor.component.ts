@@ -120,6 +120,7 @@ export class EditorComponent {
   initDataUrl = [];
   undoEditResponse = [];
   go = [];
+  showWatermark:boolean = true;
   maskUrl:String;
   pressTimer;
   public srcImageResult;
@@ -182,6 +183,7 @@ export class EditorComponent {
       initApp: (value) => this.initApp(value),
       setTrackId: (value) => this.setTrackId(value),
       setDataOriginalUrl: (value) => this.setDataOriginalUrl(value),
+      backToEdit: () => this.backToEdit(),
       component: this
     };
 
@@ -251,6 +253,12 @@ export class EditorComponent {
     if (obj.transparent && obj.transparent == true) {
       this.showimageService.applyTransparent = true;
     }
+    if (obj.showWatermark && obj.showWatermark == true) {
+      this.showWatermark = true;
+    } else {
+      this.showWatermark = false;
+    }
+    console.log(obj);
     this.showimageService.customerId = obj.customerId;
     if (obj.customerId && typeof obj.customerId === 'number') {
       this.showimageService.customerId = obj.customerId;
@@ -351,6 +359,7 @@ export class EditorComponent {
   }
 
   setTrackId(obj) {
+
     this.undoEditResponse = [];
     this.undoImageMaskStack = [];
     this.undoImageStack = [];
