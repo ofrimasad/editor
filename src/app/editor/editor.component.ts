@@ -3,19 +3,11 @@ import {
   Component, Input, ViewChild, ElementRef,
   ChangeDetectorRef, ViewEncapsulation, NgZone
 } from '@angular/core';
-import { NgClass} from '@angular/common';
+
 import {Injectable}     from '@angular/core';
 import {Http, Response, Headers} from '@angular/http';
 
-
-import { Angulartics2 } from 'angulartics2';
-//import {Angulartics2GoogleAnalytics} from 'angulartics2/src/providers/angulartics2-google-analytics';
-
-import {Angulartics2On} from 'angulartics2';
-
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser/browser_adapter';
-import {Observable}       from 'rxjs/Observable';
-
 import {RequestEditImage} from './editimage.service';
 import {Subject} from 'rxjs/Subject';
 
@@ -112,6 +104,7 @@ export class EditorComponent {
   wrapperBGColor = "#fff";
   flagFirstTime:Number = 0;
   showResultImage = 'none';
+  displayWatermark = 'none';
   displayLoader = 'none';
   displayShowInstructions = 'none';
   undoDataUrl = [];
@@ -120,7 +113,7 @@ export class EditorComponent {
   initDataUrl = [];
   undoEditResponse = [];
   go = [];
-  showWatermark:boolean = true;
+  showWatermark:boolean = false;
   maskUrl:String;
   pressTimer;
   public srcImageResult;
@@ -142,6 +135,8 @@ export class EditorComponent {
   private longPress: boolean;
   private disableShowResult: boolean;
   private dataURL: any;
+  private displayWatermarkHeight:string = "initial" ;
+  private displayWatermarkWidth: string = "initial";
 
   constructor(private windowRef:WindowRef, private elementRef:ElementRef, private cdr:ChangeDetectorRef, private showimageService:ShowimageService,
               private requestEditImage:RequestEditImage, private _dom:BrowserDomAdapter, private http:Http,
@@ -258,7 +253,6 @@ export class EditorComponent {
     } else {
       this.showWatermark = false;
     }
-    console.log(obj);
     this.showimageService.customerId = obj.customerId;
     if (obj.customerId && typeof obj.customerId === 'number') {
       this.showimageService.customerId = obj.customerId;
@@ -291,6 +285,7 @@ export class EditorComponent {
 
   private runGetTracker(customerId, trackId) {
     this.showResultImage = "none";
+    this.displayWatermark = "none";
     this.maskHidden = false;
     this.flagShowResult = false;
 
@@ -528,7 +523,7 @@ export class EditorComponent {
 
     var windowWidth = this.windowRef.nativeWindow.innerWidth;
     var windowHeight = this.windowRef.nativeWindow.innerHeight - this.decreaseInnerHeight;
-    //(window.innerHeight -240) * 0.9; // 80 + 50+60+50
+
     this.imageWrapperMaxHeight = windowHeight;
     //windowWidth = windowWidth.toPrecision(2);
     //    console.log(windowWidth, windowHeight);
@@ -540,30 +535,23 @@ export class EditorComponent {
 
     if ((windowHeight - this.obj.imageSize.height   ) < 0 || (windowWidth - this.obj.origWidth) < 0) {
       if (divideHeight > divideWidth) {
-        //  console.log('to heigh');
-        //console.log('height is longer',);
         divide = divideHeight;//this.obj.imageSize.height / windowHeight;
       } else {
         divide = divideWidth;//this.obj.origWidth / windowWidth;
-        //      console.log('to wide');
+
       }
     } else {
     }
 
-    //  console.log(divide);
 
-    if (divide > 0) {
+
+    if (divide > 0) { // image is tall
       var numIn = 0;
-
 
       var a = 1 / divide;
       numIn = (1 - a) / this.AMOUNT_ZOOM;
-      //    console.log('divide',divide,a);
-      //       numIn = Math.floor(a);
-      // divide = this.AMOUNT_ZOOM / numIn;
 
       divide = 1 - (this.AMOUNT_ZOOM * numIn);
-      //     divide = 0.4;
 
       var newHeight = this.obj.origHeight * divide;
       var newWidth = this.obj.origWidth * divide;
@@ -580,7 +568,6 @@ export class EditorComponent {
       this.canvasHeight = newHeight;
       this.totalZoom = -numIn;
       this.totalScale = divide;
-
       this.totalZoomInitial = -numIn;
       this.cdr.detectChanges();
 
@@ -592,6 +579,7 @@ export class EditorComponent {
       this.imagewrapperSizeheight = this.obj.origHeight;
       this.imagewrapperSizeWidth = this.obj.origWidth;
       this.totalScale = 1;
+
     }
 
     this.totalScale = 1 + (this.AMOUNT_ZOOM * this.totalZoom);
@@ -734,7 +722,7 @@ export class EditorComponent {
       this.ctx.canvas.width = zoomW;
       this.ctx.canvas.height = zoomH;
       this.ctx.scale(scale, scale);
-
+      //this.displayWatermarkHeight = this.displayWatermarkHeight + (this.displayWatermarkHeight*scale);
     } else {
       // zoom out
 
@@ -750,7 +738,7 @@ export class EditorComponent {
       //console.log(this.totalZoom);
       var zoomW = this.obj.origWidth * scale;
       var zoomH = this.obj.origHeight * scale;
-
+     // this.displayWatermarkHeight = this.displayWatermarkHeight - (this.displayWatermarkHeight*scale);
       if (this.totalZoom < 0) {
 
         var totalZoom = -this.totalZoom;
@@ -778,7 +766,9 @@ export class EditorComponent {
 
     this.imageSizeWidth = zoomW;
     this.imageSizeHeight = zoomH;
-    this.redrawSimple();
+
+
+      this.redrawSimple();
     this.totalScale = 1 + (this.AMOUNT_ZOOM * this.totalZoom);
 
     if (this.wrappermarginTop > 0) {
@@ -795,6 +785,15 @@ export class EditorComponent {
         this.wrappermarginTop = this.showimageService.wrappermarginTop;
       }
     }
+
+      if(this.imageSizeWidth > this.imageSizeHeight ){
+        this.displayWatermarkWidth = "270px";
+        this.displayWatermarkHeight = this.imageSizeHeight+"px";;
+      } else {
+        this.displayWatermarkWidth = this.imageSizeWidth+"px";
+        this.displayWatermarkHeight = "270px";
+      }
+
   }
 
 
@@ -1015,6 +1014,7 @@ export class EditorComponent {
 
     if (this.flagShowResult) {
       this.showResultImage = "none";
+      this.displayWatermark = "none";
       this.maskHidden = false;
       this.windowRef.nativeWindow.callbackEdit({'returnFromShowResult': true});
       if (this.undoButton != null) {
@@ -1041,6 +1041,13 @@ export class EditorComponent {
 
     if(value && value.hasOwnProperty("removeShadow")){
       this.applyShadow = !value["removeShadow"];
+      if(this.imageSizeWidth > this.imageSizeHeight ){
+        this.displayWatermarkWidth = "270px";
+        this.displayWatermarkHeight = this.imageSizeHeight+"px";;
+      } else {
+        this.displayWatermarkWidth = this.imageSizeWidth+"px";
+        this.displayWatermarkHeight = "270px";
+      }
     }
     if(value && value.hasOwnProperty("applyTransparent")){
       this.applyTransparent = value["applyTransparent"];
@@ -1106,6 +1113,10 @@ export class EditorComponent {
       that.srcImageResult = this.src;
       that.resultImageUrl = this.src;
       that.showResultImage = 'block';
+      if(that.showWatermark == true){
+        that.displayWatermark = 'block';
+      }
+
       that.maskHidden = true;
       that.flagShowResult = true;
       that.cdr.detectChanges();
