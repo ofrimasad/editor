@@ -1,31 +1,38 @@
-# Sgf
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.24.
 
-## Development server
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Prerequisites
 
-## Code scaffolding
+Both the CLI and generated project have dependencies that require Node 6.9.0 or higher, together
+with NPM 3 or higher.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+download https://nodejs.org/en/ (Recommended version)
 
-## Build
+## Installation
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+in windows Powershell run commands
 
-## Running unit tests
+```bash
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+npm install -g @angular/cli
 
-## Running end-to-end tests
+git clone CURRENT PROJECT
+cd INTO PROJECT FOLDER
+npm install
+ng serve
+```
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+You can configure the default HTTP port and the one used by the LiveReload server with two command-line options :
 
-## Deploying to Github Pages
+```bash
+ng serve --host 0.0.0.0 --port 4201 --live-reload-port 49153
+```
+To build code
 
-Run `ng github-pages:deploy` to deploy to Github Pages.
-
-## Further help
-
-To get more help on the `angular-cli` use `ng help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+ng build --prod
+```
+For sandbox code
+```bash
+ng build --prod --env=sandbox
+```
