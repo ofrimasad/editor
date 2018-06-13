@@ -63,7 +63,7 @@ export class EditorComponent {
   wrappermarginTop: any;
   maskHidden = false;
   imageWrapperMaxHeight;
-  sessionId:string;
+  imageId:number;
   imagewrapperSizeWidth;
   isGreen = false;
   flagShowResult = false;
@@ -100,7 +100,8 @@ export class EditorComponent {
   pendingRequest = null; // for edit
   preversioResponseObj;
   public apiUrl;
-  public apiProcessUrl;
+  public apiEditUrl;
+  public apiMattUrl;
   wrapperBGColor = "#fff";
   flagFirstTime:Number = 0;
   showResultImage = 'none';
@@ -115,12 +116,13 @@ export class EditorComponent {
   go = [];
   showWatermark:boolean = false;
   maskUrl:String;
+  imageSecret:string;
   pressTimer;
   public srcImageResult;
   public resultImageUrl;
   //  View_Result= "";
   editRequestSubject = new Subject();
-  getSessionInfo = new Subject();
+  getImageData = new Subject();
   flagShouldInitizlize = false;
   showProccessErrorMessageTitle = "";
   showProccessErrorMessage = "";
@@ -156,15 +158,15 @@ export class EditorComponent {
     //  var url = url.substring(0, url.lastIndexOf("/") + 1);
 
     this.editRequestSubject
-      .switchMap((c: any) => this.http.post(c.a, c.b, {headers: c.header}))
+      .switchMap((c: any) => this.http.put(c.a, c.b, {headers: c.header}))
       .map((res:Response) => res.json())
-      .subscribe(res => this.showEditResponse(res.response));
+      .subscribe(res => this.showEditResponse(res));
 
 
-    this.getSessionInfo
-      .switchMap((c: any) => this.http.post(c.url, c.b, {headers: c.headers}))
+    this.getImageData
+      .switchMap((c: any) => this.http.get(c.url, {headers: c.headers}))
       .map((res:Response) => res.json())
-      .subscribe(res => this.foundTrackId(res));
+      .subscribe(res => this.foundImageData(res));
 
     this.windowRef.nativeWindow.camera51Edit = {
       zone: this._ngZone,
@@ -176,7 +178,7 @@ export class EditorComponent {
       saveImage: (value) => this.saveImage(value),
       undo: () => this.undoEdit(),
       initApp: (value) => this.initApp(value),
-      setTrackId: (value) => this.setTrackId(value),
+      setTrackId: (customerId, imageId, secret) => this.setTrackId(customerId, imageId, secret),
       setDataOriginalUrl: (value) => this.setDataOriginalUrl(value),
       backToEdit: () => this.backToEdit(),
       component: this
@@ -192,13 +194,14 @@ export class EditorComponent {
     if (lastChar != '/') {         // If the last character is not a slash
       apiUrl = apiUrl + '/';            // Append a slash to it.
     }
-    this.apiProcessUrl = apiUrl + "Camera51Server/processImage";
-    this.apiTrackId = apiUrl + "Camera51Server/retrieveSession";
+    this.apiEditUrl = apiUrl + "images/{0}/edit";
+    this.apiMattUrl = apiUrl + "images/";
+    this.apiTrackId = apiUrl + "images/";
   }
 
   initApp(obj) {
-    this.showimageService.customerId = 0;
-    this.showimageService.trackId = '';
+    this.showimageService.customerId = '';
+    this.showimageService.imageId = 0;
     var newObj = JSON.parse(obj);
     this.setOutsideConfig(newObj);
     //  console.log(newObj, this.showimageService);
@@ -212,17 +215,17 @@ export class EditorComponent {
 
 
       this.showimageService.resultImageUrl = strImage;
-      this.sessionId = sessionId;
+      this.imageId = this.showimageService.imageId;
 
       this.initViewOnData(sessionId);
       return;
     }
-    if (this.showimageService.trackId != null &&
-      this.showimageService.trackId.length > 0) {
-
-      this.runGetTracker(this.showimageService.customerId, this.showimageService.trackId);
-
-    }
+    // if (this.showimageService.trackId != null &&
+    //   this.showimageService.trackId.length > 0) {
+    //
+    //   this.runGetTracker(this.showimageService.customerId, this.showimageService.trackId);
+    //
+    // }
   }
 
   getSession(path) {
@@ -271,8 +274,8 @@ export class EditorComponent {
 
       this.decreaseInnerHeight = obj.decreaseInnerHeight;
     }
-    if (obj.trackId && typeof obj.trackId === 'string' && obj.trackId.length > 0) {
-      this.showimageService.trackId = obj.trackId;
+    if (obj.imageId && typeof obj.imageId === 'number') {
+      this.showimageService.imageId = obj.imageId;
     }
     if (obj.originalImageUrl && typeof obj.originalImageUrl === 'string' && obj.originalImageUrl.length > 0) {
       this.showimageService.originalImageUrl = obj.originalImageUrl;
@@ -283,7 +286,7 @@ export class EditorComponent {
     }
   }
 
-  private runGetTracker(customerId, trackId) {
+  private runGetTracker(customerId, imageId, secret) {
     this.showResultImage = "none";
     this.displayWatermark = "none";
     this.maskHidden = false;
@@ -297,26 +300,17 @@ export class EditorComponent {
     this.totalZoom = 0;
     this.undoDataUrl = [];
     this.undoEditResponse = [];
-    if (customerId == '' || customerId == null) {
-      return;
-    }
-    this.showimageService.customerId = customerId;
 
     c = {};
-    var creds = {
-      "trackId": trackId,
-      "customerId": customerId
-    };
-
-    var credsa = this.param(creds);
 
     var c:any = {};
-    c.url = this.apiTrackId;
-    c.b = credsa;
+    c.url = this.apiTrackId + imageId + "?with_settings=true&with_mask_url=true";
     var headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    headers.append('secret', secret);
+    headers.append('x-api-key', customerId);
     c.headers = headers;
-    this.getSessionInfo.next(c);
+    this.getImageData.next(c);
     return true;
   }
 
@@ -333,7 +327,7 @@ export class EditorComponent {
       this.showimageService.originalImageUrl = originalImageUrl;
 
       this.showimageService.resultImageUrl = this.resultImageUrl;
-      this.sessionId = sessionId;
+      this.imageId = this.showimageService.imageId;
       //that.stopLoader();
       this.initViewOnData(sessionId);
       return;
@@ -353,7 +347,7 @@ export class EditorComponent {
 
   }
 
-  setTrackId(obj) {
+  setTrackId(customerId, imageId, secret) {
 
     this.undoEditResponse = [];
     this.undoImageMaskStack = [];
@@ -363,13 +357,13 @@ export class EditorComponent {
     this.resetDrawing();
     this.initializeCanvas();
     this.countEdits = 0;
-    var newObj = JSON.parse(obj);
-    var customerId = newObj.customerId;
-    var trackId = newObj.trackId;
-    this.setOutsideConfig(newObj);
+    var customerId = customerId;
+    var trackId = imageId
+    // this.setOutsideConfig(newObj);
     this.showimageService.customerId = customerId;
-    this.showimageService.trackId = trackId;
-    this.runGetTracker(this.showimageService.customerId, this.showimageService.trackId);
+    this.showimageService.imageId = imageId;
+    this.showimageService.secret = secret;
+    this.runGetTracker(customerId, imageId, secret);
   }
 
 
@@ -403,42 +397,42 @@ export class EditorComponent {
   }
 
 
-  foundTrackId(foundTrackId) {
-    var response;
+  foundImageData(response) {
+    var image;
 
-    if (foundTrackId.response) {
-      response = foundTrackId.response;
+    if (response.image) {
+      image = response.image;
     } else {
-      console.log("foundTrackId", foundTrackId.response);
-      console.log('track id not found');
+      console.log("image not found", response.image);
       this.stopLoader();
       return;
     }
     if (response.hasOwnProperty('errors')) {
-      console.log('track id not found response: ', response.errors[0]);
-      this.windowRef.nativeWindow.callbackEdit({'error': "trackerIdNotFound", "message": response.errors[0]});
+      console.log('track id not found response: ', image.errors[0]);
+      this.windowRef.nativeWindow.callbackEdit({'error': "trackerIdNotFound", "message": image.errors[0]});
       this.stopLoader();
       return;
     }
 
-    var imageCopy = response.imageCopyURL;
-    imageCopy = imageCopy.replace("s3.amazonaws.com/cam51-img-proc", "d2f1mfcynop4j.cloudfront.net");
+    var originalImageUrl = image.input_image_url;
+    originalImageUrl = originalImageUrl.replace("s3.amazonaws.com/cam51-img-proc", "d2f1mfcynop4j.cloudfront.net");
     //console.log(imageCopy);
 
     //  this.showEditorView = "block";
     var imageObj = new Image();
     var that = this;
     imageObj.onload = function () {
-      that.showimageService.originalImageUrl = imageCopy;//response.originalImageUrl;
-      that.maskUrl = response.resultEditMaskImageUrl;
+      that.showimageService.originalImageUrl = originalImageUrl;//response.originalImageUrl;
+      that.maskUrl = image.mask_url;
 
-      var strImage = response.resultImageUrl;
+      var strImage = image.result_image_url;
       strImage = strImage.replace("s3.amazonaws.com/cam51-img-proc", "d2f1mfcynop4j.cloudfront.net");
 
       that.showimageService.resultImageUrl = strImage;
-      that.sessionId = response.sessionId;
+      that.imageId = image.id;
+      that.imageSecret = image.secret;
       that.stopLoader();
-      that.initViewOnData(that.sessionId);
+      that.initViewOnData(image.id);
       that.cdr.detectChanges();
 
       that.windowRef.nativeWindow.callbackEdit({'inEditMode': true});
@@ -446,31 +440,27 @@ export class EditorComponent {
 
     var imageObjMask = new Image();
     imageObjMask.onload = function () {
-      imageObj.src = imageCopy;//response.originalImageUrl;
+      imageObj.src = originalImageUrl;//response.originalImageUrl;
       that.cdr.detectChanges();
     };
-    imageObjMask.src = response.resultEditMaskImageUrl;
+    imageObjMask.src = image.mask_url;
 
   }
 
-  initViewOnData(sessionId) {
+  initViewOnData(imageId) {
     this.preversioResponseObj = {};
 
-    if (sessionId == '' && this.showimageService.originalImageUrl.length > 1) {
-      sessionId = this.getSession(this.showimageService.originalImageUrl);
-    }
-    if (sessionId == '') {
+    if (imageId <= 0) {
       return;
     }
 
     this.showimageService.resultEditMaskImageUrl = this.maskUrl;
-    this.preversioResponseObj.resultEditMaskImageUrl = this.maskUrl;
+    this.preversioResponseObj.mask_url = this.maskUrl;
     this.obj = {
-      "originalImageUrl": this.showimageService.originalImageUrl,
-      "resultImageUrl": this.showimageService.resultImageUrl,
-      "resultEditMaskImageUrl": this.maskUrl,
-      "sessionId": sessionId,
-      "imageId": "1",
+      "input_image_url": this.showimageService.originalImageUrl,
+      "result_image_url": this.showimageService.resultImageUrl,
+      "mask_url": this.maskUrl,
+      "id": imageId,
       "customerId": this.showimageService.customerId
     }
     this.srcImageResult = this.defaultSrcImageResult;
@@ -591,7 +581,7 @@ export class EditorComponent {
     if (this.flagShowResult) {
       return;
     }
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'undo',"customerId="+this.showimageService.customerId +",sessionId="+this.sessionId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'undo',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
 
     var undoDataUrl = this.undoDataUrl;
     if (this.undoEditResponse.length <= 1) {
@@ -600,14 +590,14 @@ export class EditorComponent {
     }
     var imageMask = this.undoEditResponse[undoDataUrl.length - 2];
 
-    this.undoImageMaskStack.push(imageMask.resultEditMaskImageUrl);
+    this.undoImageMaskStack.push(imageMask.mask_url);
 
     this.undoDataUrl.pop();
     this.undoEditResponse.pop();
     this.clearCanvas_simple();
-    this.showimageService.resultEditMaskImageUrl = imageMask.resultEditMaskImageUrl;
+    this.showimageService.resultEditMaskImageUrl = imageMask.mask_url;
     this.preversioResponseObj = imageMask;
-    // this.preversioResponseObj.resultEditMaskImageUrl = imageMask.resultEditMaskImageUrl;
+    // this.preversioResponseObj.resultEditMaskImageUrl = imageMask.mask_url;
     this.initDrawArrays(null);
     this.redrawSimple();
   }
@@ -635,7 +625,7 @@ export class EditorComponent {
 
       this.initDataUrl = editFromPreviousOpenWindow.undoDataUrl.slice();
 
-      this.preversioResponseObj.resultEditMaskImageUrl = this.showimageService.editedStuff.undoEditResponse[this.showimageService.editedStuff.undoEditResponse.length - 1].resultEditMaskImageUrl;
+      this.preversioResponseObj.mask_url = this.showimageService.editedStuff.undoEditResponse[this.showimageService.editedStuff.undoEditResponse.length - 1].mask_url;
       //  this.showimageService.lastDataUrl = this.showimageService.editedStuff.undoDataUrl[this.showimageService.editedStuff.undoDataUrl.length - 1];
     } else {
 
@@ -646,9 +636,9 @@ export class EditorComponent {
       this.clickSend = [];
       this.clickDrag_simple = [];
       this.clickLineWidth = [];
-      if (this.obj.hasOwnProperty('resultEditMaskImageUrl') == false) {
+      if (this.obj.hasOwnProperty('mask_url') == false) {
         this.preversioResponseObj = {};
-        this.preversioResponseObj.resultEditMaskImageUrl = this.obj.resultEditMaskImageUrl;
+        this.preversioResponseObj.mask_url = this.obj.mask_url;
       }
     }
   }
@@ -662,7 +652,7 @@ export class EditorComponent {
   doLongZoomPressDown(type) {
     this.longPress = false;
     var that = this;
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'LongZoom'+type ,"customerId="+this.showimageService.customerId +",sessionId="+this.sessionId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'LongZoom'+type ,"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
 
     var repeat = function () {
       that.doZoom(type);
@@ -1058,7 +1048,7 @@ export class EditorComponent {
       this.backToEdit();
       return false;
     }
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'showResult',"customerId="+this.showimageService.customerId +",sessionId="+this.sessionId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'showResult',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
 
     var dataURL = this.canvasElement.nativeElement.toDataURL();
 
@@ -1079,17 +1069,16 @@ export class EditorComponent {
     var dataURL = this.canvasElement.nativeElement.toDataURL();
     this.displayLoader = 'block';
     this.startLoader();
-    this.requestEditImage.search(dataURL,
-      this.obj.originalImageUrl,
-      this.obj.imageId,
+    this.requestEditImage.search(
+      this.imageId,
+      this.imageSecret,
       this.obj.customerId,
-      this.obj.sessionId,
-      this.apiProcessUrl,
-      this.preversioResponseObj.resultEditMaskImageUrl,
-      true,
+      this.apiMattUrl,
+      this.getMaskName(this.preversioResponseObj.mask_url),
       this.applyShadow,
-      this.showimageService.applyTransparent, isSaveRequest
-    ).subscribe(a => this.showResultResponse(a.response, isSaveRequest));
+      this.showimageService.applyTransparent,
+      isSaveRequest
+    ).subscribe(a => this.showResultResponse(a, isSaveRequest));
     this.startLoader();
   }
 
@@ -1102,7 +1091,7 @@ export class EditorComponent {
   }
 
   // after matting
-  showResultResponse(ob, isSaveRequest) {
+  showResultResponse(response, isSaveRequest) {
     //  console.log(ob);
     var that = this;
     var image = new Image();
@@ -1130,17 +1119,21 @@ export class EditorComponent {
 
       }
     }
-    image.src = ob.resultImageUrl;
+    image.src = response.image.result_image_url;
+  }
+
+  getMaskName(maskUrl) {
+    return maskUrl.substring(maskUrl.lastIndexOf('/')+1);
   }
 
   preformEditRequest() {
     var dataURL ;
-
-    this.clickSend.unshift(this.ctx.lineWidth);
+    var radius = this.ctx.lineWidth;
+    var color;
     if(this.colorChoosen == "rgb(0, 255, 0)"){
-      this.clickSend.unshift("GREEN");
+      color = "fg";
     } else {
-      this.clickSend.unshift("RED");
+      color = "bg";
     }
 
     if (this.totalZoom != 0) {
@@ -1165,26 +1158,23 @@ export class EditorComponent {
     this.displayLoader = 'block';
     this.loaderImage = this.assetsUrl + "/assets/tools/malabiloader.gif";
     this.startLoader();
+    var maskName = this.getMaskName(this.preversioResponseObj.mask_url);
     var creds = {
-      "origImgUrl": this.obj.originalImageUrl,
-      "imageId": this.obj.imageId,
-      "sessionId": this.obj.sessionId,
-      "directResponse": true,
-      "customerId": this.obj.customerId,
-      "doMatting": false,
-      "userInputData" : this.clickSend,
-      "previousMaskURL": this.preversioResponseObj.resultEditMaskImageUrl,
-      "shadow": this.applyShadow,
-      "transparent": this.showimageService.applyTransparent
-      // "userInputImageData": dataURL
+      "prev_mask_name": maskName,
+      "color":color,
+      "radius":radius,
+      "coordinates": this.clickSend,
     };
 
     var headers = new Headers();
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    var credsa = this.param(creds);
+    headers.append('Content-Type', 'application/json');
+    headers.append('secret', this.imageSecret);
+    headers.append('x-api-key', this.showimageService.customerId);
+    var credsa = JSON.stringify(creds);
 
     this.dataURL = dataURL;
-    this.editRequestSubject.next({a: this.apiProcessUrl, b: credsa, header: headers});
+    var url = this.apiEditUrl.replace("{0}", this.imageId.toString());
+    this.editRequestSubject.next({a: url, b: credsa, header: headers});
 
   }
 
@@ -1195,7 +1185,7 @@ export class EditorComponent {
   showEditResponse(a) {
     //console.log(a);
     this.undoDataUrl.push(this.dataURL);
-    this.undoEditResponse.push(a);
+    this.undoEditResponse.push(a.image);
     this.undoImageStack.push(this.dataURL);
 
     this.countEdits++;
@@ -1215,29 +1205,28 @@ export class EditorComponent {
       this.disableColorFG = false;
     }
     if(a.data){
-      this.preversioResponseObj = a;
+      this.preversioResponseObj = a.image;
 
       this.showimageService.resultEditMaskImageUrl = "data:image/png;base64,"+a.data;
-      this.undoImageMaskStack.push(a.resultEditMaskImageUrl);
+      this.undoImageMaskStack.push(a.mask_url);
       this.clearCanvas_simple();
       this.cdr.detectChanges();
     } else {
 
 
-      if (a.resultEditMaskImageUrl) {
-        this.preversioResponseObj = a;
-        //document.getElementById('image2Element').src = a.resultEditMaskImageUrl;
+      if (a.image.mask_url) {
+        this.preversioResponseObj = a.image;
         var that = this;
         var imageObjMask = new Image();
         imageObjMask.onload = function () {
-          that.showimageService.resultEditMaskImageUrl = a.resultEditMaskImageUrl;
-          that.undoImageMaskStack.push(a.resultEditMaskImageUrl);
+          that.showimageService.resultEditMaskImageUrl = a.mask_url;
+          that.undoImageMaskStack.push(a.mask_url);
           that.clearCanvas_simple();
           that.cdr.detectChanges();
 
         };
 
-        imageObjMask.src = a.resultEditMaskImageUrl;
+        imageObjMask.src = a.mask_url;
       }
     }
     this.resetDrawing();
@@ -1293,7 +1282,7 @@ export class EditorComponent {
       this.showimageService.applyTransparent = this.applyTransparent;
     }
 
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'saveImage',"customerId="+this.showimageService.customerId +",sessionId="+this.sessionId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'saveImage',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
     this.runMatting(true);
     return false;
   }

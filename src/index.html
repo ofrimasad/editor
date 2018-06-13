@@ -157,6 +157,8 @@
 
   var customerId = 0;
   var sessionId = 0;
+  var imageId = 0;
+  var secret = "";
   var parentDocHeight = document.documentElement.clientHeight;
   var parentDocWidth = document.documentElement.clientWidth;
   document.body.innerHTML += '<div id="camera51highlevelloader" style="top: 0px;display:none;position:absolute;width:100%;height:100%;cursor:wait;height:100%;z-index:34344"></div>';
@@ -168,40 +170,28 @@
     mainWindow = e.source;
     eventPost = e;
     if (e.data == '') return;
-    var result = '';
+    var data = '';
+    if (e.data.id > 0) {
+      imageId = e.data.id;
+    }
     if (e.data.customerId > 0) {
       customerId = e.data.customerId;
     }
+    secret = e.data.secret;
 
     try {
-      result = e.data;
-      if (e.data.customerId != '' && e.data.customerId !== undefined && e.data.trackId) {
-        sessionId = getSession(e.data.trackId);
-        ga('send', 'event', 'CLIENT', 'setTrackId', "customerId=" + customerId + ",trackId=" + e.data.trackId);
-        if (e.data.hasOwnProperty('objInJsonString')) {
-          window.camera51Edit.zone.run(function () {
-            window.camera51Edit.setTrackId(e.data.objInJsonString);
-          });
-        } else {
+      data = e.data;
+      if (data.hasOwnProperty("action") && data["action"] == "openEditor") {
+        ga('send', 'event', 'CLIENT', 'setTrackId', "customerId=" + customerId + ",imageId=" + e.data.imageId);
 
-          var ob = {};
-          ob.trackId = e.data.trackId;
-          ob.customerId = e.data.customerId;
+        window.camera51Edit.zone.run(function () {
+          window.camera51Edit.setTrackId(data.customerId, data.imageId, data.secret);
+        });
 
-          window.camera51Edit.zone.run(function () {
-            window.camera51Edit.setTrackId(JSON.stringify(ob));
-          });
-        }
         return;
       }
       if (e.data.initCamera51) {
         var a = JSON.parse(e.data.initCamera51);
-        if (a.trackId) {
-          sessionId = getSession(a.trackId);
-        }
-        if (a.originalImageUrl) {
-          sessionId = getSession(a.originalImageUrl);
-        }
         if (a.customerId) {
           customerId = a.customerId;
         }
@@ -217,7 +207,6 @@
         return;
       }
       if (e.data.customerId && e.data.originalImageUrl) {
-        sessionId = getSession(e.data.originalImageUrl);
         ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "customerId=" + customerId + ",sessionId=" + sessionId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setDataOriginalUrl(e.data.objInJsonString);
@@ -226,66 +215,66 @@
       if (e.data.backgroundColor) {
         document.body.style.backgroundColor = e.data.backgroundColor;
       }
-      if (result == "openEdit") {
+      if (data == "openEdit") {
         ga('send', 'event', 'CLIENT', 'openEdit', "customerId=" + customerId + ",sessionId=" + sessionId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.openEdit()
         });
         return;
       }
-      if (result == 'setColor_colorBG') {
+      if (data == 'setColor_colorBG') {
         ga('send', 'event', 'CLIENT', 'drawFG', "customerId=" + customerId + ",sessionId=" + sessionId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorBG')
         });
         return;
       }
-      if (result == 'setColor_colorFG') {
+      if (data == 'setColor_colorFG') {
         ga('send', 'event', 'CLIENT', 'drawBG', "customerId=" + customerId + ",sessionId=" + sessionId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorFG')
         })
         return;
       }
-      if (result == 'saveImage') {
+      if (data == 'saveImage') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.saveImage()
         });
         return;
       }
-      if (result == 'showResult') {
+      if (data == 'showResult') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.showResult()
         });
         return;
       }
-      if (result.hasOwnProperty("action") && result["action"] == "saveImage") {
+      if (data.hasOwnProperty("action") && data["action"] == "saveImage") {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.saveImage(e.data);
         });
         return;
       }
-      if (result.hasOwnProperty("action") && result["action"] == "backToEdit") {
+      if (data.hasOwnProperty("action") && data["action"] == "backToEdit") {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.backToEdit();
         });
         return;
       }
 
-      if (result.hasOwnProperty("action") && result["action"] == "showResult") {
+      if (data.hasOwnProperty("action") && data["action"] == "showResult") {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.showResult(e.data);
         });
         return;
       }
-      if (result == 'zoomIn') {
+      if (data == 'zoomIn') {
 
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doZoom('in')
         });
         return;
       }
-      if (result == 'zoomOut') {
+      if (data == 'zoomOut') {
 
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doZoom('out')
@@ -293,41 +282,41 @@
         return;
       }
 
-      if (result == 'onclickLongZoomIn') {
+      if (data == 'onclickLongZoomIn') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doLongZoomPressDown('in')
         });
         return;
       }
-      if (result == 'onmouseupLongZoomIn') {
+      if (data == 'onmouseupLongZoomIn') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doLongZoomPressUp('in')
         });
         return;
       }
-      if (result == 'onclickLongZoomOut') {
+      if (data == 'onclickLongZoomOut') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doLongZoomPressDown('out')
         });
         return;
       }
-      if (result == 'onmouseupLongZoomOut') {
+      if (data == 'onmouseupLongZoomOut') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.doLongZoomPressUp('out')
         });
         return;
       }
 
-      if (result == 'undo') {
+      if (data == 'undo') {
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.undo()
         });
         return;
       }
     } catch (e) {
-      result = 'eval() threw an exception.';
+      data = 'eval() threw an exception.';
     }
-    mainWindow.postMessage(result, eventPost.origin);
+    mainWindow.postMessage(data, eventPost.origin);
   });
 
 

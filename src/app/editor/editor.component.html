@@ -4,7 +4,7 @@
     <div class="text-centered" [style.display]="showEditorView">
       <div #imagewrapper class="imagewrapper imageTransition" [ngClass]="{imagewrapperBox: showWrapperShadow}" [style.width.px]="imagewrapperSizeWidth" [style.height.px]="imagewrapperSizeheight"
            [style.marginTop.px]="wrappermarginTop"  [style.boxShadow]="wrapperShadow" [style.max-height.px]="imageWrapperMaxHeight"  >
-        <img #image1Element  class="imageTransition" id="image1Element" src="{{obj.originalImageUrl}}" [style.width.px]="imageSizeWidth" [style.height.px]="imageSizeHeight"  style=" position: relative; top: 0; left: 0;"/>
+        <img #image1Element  class="imageTransition" id="image1Element" src="{{obj.input_image_url}}" [style.width.px]="imageSizeWidth" [style.height.px]="imageSizeHeight"  style=" position: relative; top: 0; left: 0;"/>
         <img #image2Element id="image2Element" class="imageTransition" src="{{showimageService.resultEditMaskImageUrl}}" [style.width.px]="imageSizeWidth" [style.height.px]="imageSizeHeight" [hidden]="maskHidden" style="position: absolute; top: 0; left: 0;"  />
 
         <canvas #canvasElement id="camera51Canvas" class="cursorRed imageTransition" [ngClass]="{cursorGreen : isGreen}" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"
