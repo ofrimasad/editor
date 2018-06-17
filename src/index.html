@@ -101,7 +101,6 @@
 </div>
 
 <script>
-  var showTutorial = false;
   var flagShowTutorial = false;
 
   window.oncontextmenu = function (e) {
@@ -109,8 +108,8 @@
     e.preventDefault();
     return false;
   };
-  function callShowTutorial(){
-    if(showTutorial == true && getCookie("camera51Tutorial") == ""){
+  function showTutorial(){
+    if(getCookie("MalabiTutorial") == ""){
       document.getElementById("show-tutorial-first-time").style.display = 'block';
       flagShowTutorial = true;
     }
@@ -131,7 +130,7 @@
           fadeTarget.style.opacity -= 0.5;
         }
       }, 100);
-      document.cookie = "camera51Tutorial=seen";
+      document.cookie = "MalabiTutorial=seen";
       setTimeout(function () {
         fadeTarget.style.display = "none";
 
@@ -190,19 +189,16 @@
 
         return;
       }
-      if (e.data.initCamera51) {
-        var a = JSON.parse(e.data.initCamera51);
+      if (e.data.initMalabi) {
+        var a = JSON.parse(e.data.initMalabi);
         if (a.customerId) {
           customerId = a.customerId;
         }
-        if (a.showTutorial === true) {
-          showTutorial = true;
-        }
 
-        callShowTutorial();
+        showTutorial();
 
         window.camera51Edit.zone.run(function () {
-          window.camera51Edit.initApp(e.data.initCamera51);
+          window.camera51Edit.initApp(e.data.initMalabi);
         });
         return;
       }

@@ -60,7 +60,7 @@ export class EditorComponent {
   showWrapperShadow = true;
   wrapperShadow = "0 5px 15px rgba(0,0,0,.5)";
   imagewrapperOverflow = 'hidden';
-  wrappermarginTop: any;
+  wrappermarginTop = 10;
   maskHidden = false;
   imageWrapperMaxHeight;
   imageId:number;
@@ -76,7 +76,7 @@ export class EditorComponent {
   disableUndoButton;
   disableColorFG;
   totalZoom = 0;
-  decreaseInnerHeight:number = 10;
+  decreaseInnerHeight:number = 20;
   totalZoomInitial;
   public ctx;
   public paint_simple;
@@ -265,10 +265,7 @@ export class EditorComponent {
       this.showWrapperShadow = obj.showWrapperShadow;
     }
 
-    if (obj.wrappermarginTop == 0 || (obj.wrappermarginTop && typeof obj.wrappermarginTop === 'number')) {
-      this.wrappermarginTop = obj.wrappermarginTop;
-      this.showimageService.wrappermarginTop = obj.wrappermarginTop;
-    }
+    this.showimageService.wrappermarginTop = this.wrappermarginTop;
 
     if (obj.decreaseInnerHeight && typeof obj.decreaseInnerHeight === 'number') {
 
@@ -462,7 +459,7 @@ export class EditorComponent {
       "mask_url": this.maskUrl,
       "id": imageId,
       "customerId": this.showimageService.customerId
-    }
+    };
     this.srcImageResult = this.defaultSrcImageResult;
     this.applyShadow = this.showimageService.applyShadow;
     this.applyTransparent = this.showimageService.applyTransparent;
