@@ -166,6 +166,9 @@
   var eventPost;
   window.addEventListener('message', function (e) {
 
+    if (e.data.hasOwnProperty('type') && e.data.type === 'webpackOk')
+      return;
+
     mainWindow = e.source;
     eventPost = e;
     if (e.data == '') return;
@@ -203,7 +206,7 @@
         return;
       }
       if (e.data.customerId && e.data.originalImageUrl) {
-        ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "customerId=" + customerId + ",sessionId=" + sessionId);
+        ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "customerId=" + customerId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setDataOriginalUrl(e.data.objInJsonString);
         });
@@ -211,36 +214,17 @@
       if (e.data.backgroundColor) {
         document.body.style.backgroundColor = e.data.backgroundColor;
       }
-      if (data == "openEdit") {
-        ga('send', 'event', 'CLIENT', 'openEdit', "customerId=" + customerId + ",sessionId=" + sessionId);
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.openEdit()
-        });
-        return;
-      }
       if (data == 'setColor_colorBG') {
-        ga('send', 'event', 'CLIENT', 'drawFG', "customerId=" + customerId + ",sessionId=" + sessionId);
+        ga('send', 'event', 'CLIENT', 'drawFG', "customerId=" + customerId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorBG')
         });
         return;
       }
       if (data == 'setColor_colorFG') {
-        ga('send', 'event', 'CLIENT', 'drawBG', "customerId=" + customerId + ",sessionId=" + sessionId);
+        ga('send', 'event', 'CLIENT', 'drawBG', "customerId=" + customerId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorFG')
-        })
-        return;
-      }
-      if (data == 'saveImage') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.saveImage()
-        });
-        return;
-      }
-      if (data == 'showResult') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.showResult()
         });
         return;
       }

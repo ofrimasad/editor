@@ -289,3 +289,18 @@ html {
 .progress {
   margin-bottom: 0px !important;
 }
+.cursorRed{
+  cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/red_pointer_6_lastone.cur'), auto;
+  cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/red_pointer_6.png') 0 0, auto;
+}
+.cursorGreen {
+  cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/green_pointer_6_lastone.cur'), auto;
+  cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools//green_pointer_6.png') 0 0, auto;
+}
+.transparentBg {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABYElEQVR42u3ZwQmAMBQFQRU7Sv8lpKbYQI7Coswc5d2WD0LOtdaxM+fcfh9j2L+4vw5SAsQEiAkQEyAmQEyA2P2V/+W/7l1ATICYADEBYgLEBIgJEDu9B7R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxB6KN5Q4wR/MdAAAAABJRU5ErkJggg==');
+}
+.imagewrapperBox {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;;
+  box-shadow:  rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;;
+}

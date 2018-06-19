@@ -9,7 +9,6 @@ import {Http, Response, Headers} from '@angular/http';
 
 import {BrowserDomAdapter} from '@angular/platform-browser/src/browser/browser_adapter';
 import {RequestEditImage} from './editimage.service';
-import {Subject} from 'rxjs/Subject';
 
 import {ShowimageService} from './showimage.service';
 
@@ -21,30 +20,10 @@ import {WindowRef} from "../WindowRef";
   selector: 'editor',
 
   providers: [RequestEditImage, BrowserDomAdapter],
-  // pipes: [TranslatePipe],
   encapsulation: ViewEncapsulation.Emulated,
 
-  styles: [require('./editor.component.css'),
-    `
-    .cursorRed{
-      cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/red_pointer_6_lastone.cur'), auto;
-      cursor: url( ${require('./red_pointer_6.png')} ) 0 0, auto;
-    }
-    .cursorGreen {
-      cursor: url('https://assets-malabi.s3.amazonaws.com/apiexample/assets/tools/green_pointer_6_lastone.cur'), auto;
-      cursor: url(${require('./green_pointer_6.png')}) 0 0, auto;
-    }
-    ` + "" + `
-    .transparentBg {
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABYElEQVR42u3ZwQmAMBQFQRU7Sv8lpKbYQI7Coswc5d2WD0LOtdaxM+fcfh9j2L+4vw5SAsQEiAkQEyAmQEyA2P2V/+W/7l1ATICYADEBYgLEBIgJEDu9B7R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxLwHxHsXEBMgJkBMgJgAMQFiAsS8B8R7FxATICZATICYADEBYgLEvAfEexcQEyAmQEyAmAAxAWICxB6KN5Q4wR/MdAAAAABJRU5ErkJggg==');
-    }
-    .imagewrapperBox {
-      -webkit-box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;;
-      box-shadow:  rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;;
-    }
-    `
-  ],
-  template: require('./editor.component.html')
+  styleUrls: ['./editor.component.css'],
+  templateUrl: ('./editor.component.html')
 })
 @Injectable()
 export class EditorComponent {
@@ -56,7 +35,6 @@ export class EditorComponent {
   @ViewChild('colorFG') colorFGElement;
   @ViewChild('colorBG') colorBGElement;
 
-  lastDataUrl:string = '';
   showWrapperShadow = true;
   wrapperShadow = "0 5px 15px rgba(0,0,0,.5)";
   imagewrapperOverflow = 'hidden';
@@ -86,8 +64,6 @@ export class EditorComponent {
   public clickDrag_simple = [];
   public clickColor = [];
   public clickLineWidth = [];
-  public canvas_simple;
-  public context_simple;
   applyShadow = true;
   applyTransparent = false;
   countEdits:number = 0;
@@ -97,7 +73,6 @@ export class EditorComponent {
   public colorFG = "rgb(0, 255, 0)";
   public colorChoosen = this.colorBG;
   totalScale = 0;
-  pendingRequest = null; // for edit
   preversioResponseObj;
   public apiUrl;
   public apiEditUrl;
@@ -113,60 +88,36 @@ export class EditorComponent {
   undoImageMaskStack = [];
   initDataUrl = [];
   undoEditResponse = [];
-  go = [];
   showWatermark:boolean = false;
   maskUrl:String;
   imageSecret:string;
   pressTimer;
   public srcImageResult;
   public resultImageUrl;
-  //  View_Result= "";
-  editRequestSubject = new Subject();
-  getImageData = new Subject();
   flagShouldInitizlize = false;
-  showProccessErrorMessageTitle = "";
-  showProccessErrorMessage = "";
-  public showProccessErrorWidth = 397;
   loaderImage;
   apiTrackId:string;
-  progressPercent = 0;
   showEditorView = "none";
   defaultSrcImageResult = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-  private imageSizeHeight: number;
-  private imagewrapperSizeheight: number;
-  private longPress: boolean;
-  private disableShowResult: boolean;
-  private dataURL: any;
-  private displayWatermarkHeight:string = "initial" ;
-  private displayWatermarkWidth: string = "initial";
+  public imageSizeHeight: number;
+  public imagewrapperSizeheight: number;
+  public longPress: boolean;
+  public disableShowResult: boolean;
+  public dataURL: any;
+  public displayWatermarkHeight:string = "initial" ;
+  public displayWatermarkWidth: string = "initial";
 
-  constructor(private windowRef:WindowRef, private elementRef:ElementRef, private cdr:ChangeDetectorRef, private showimageService:ShowimageService,
+  constructor(private windowRef:WindowRef, private elementRef:ElementRef, private cdr:ChangeDetectorRef, public showimageService:ShowimageService,
               private requestEditImage:RequestEditImage, private _dom:BrowserDomAdapter, private http:Http,
               private _ngZone:NgZone) {
 
     this.showWrapperShadow = true;
-    //  this.showimageService.resultEditMaskImageUrl = showimageService.resultImageUrl;
     this.obj = {
       "originalImageUrl": "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
       "resultEditMaskImageUrl": "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
 
     };
     this.srcImageResult = this.defaultSrcImageResult;
-
-
-    //    sessionId = 1;
-    //  var url = url.substring(0, url.lastIndexOf("/") + 1);
-
-    this.editRequestSubject
-      .switchMap((c: any) => this.http.put(c.a, c.b, {headers: c.header}))
-      .map((res:Response) => res.json())
-      .subscribe(res => this.showEditResponse(res));
-
-
-    this.getImageData
-      .switchMap((c: any) => this.http.get(c.url, {headers: c.headers}))
-      .map((res:Response) => res.json())
-      .subscribe(res => this.foundImageData(res));
 
     this.windowRef.nativeWindow.camera51Edit = {
       zone: this._ngZone,
@@ -307,7 +258,7 @@ export class EditorComponent {
     headers.append('secret', secret);
     headers.append('x-api-key', customerId);
     c.headers = headers;
-    this.getImageData.next(c);
+    this.http.get(c.url, {headers: headers}).subscribe(res => this.foundImageData(res.json()));
     return true;
   }
 
@@ -320,12 +271,10 @@ export class EditorComponent {
     this.setOutsideConfig(newObj);
     if (originalImageUrl.length > 0) {
       var sessionId = this.getSession(originalImageUrl);
-      // console.log(sessionId);
       this.showimageService.originalImageUrl = originalImageUrl;
 
       this.showimageService.resultImageUrl = this.resultImageUrl;
       this.imageId = this.showimageService.imageId;
-      //that.stopLoader();
       this.initViewOnData(sessionId);
       return;
     }
@@ -1171,8 +1120,7 @@ export class EditorComponent {
 
     this.dataURL = dataURL;
     var url = this.apiEditUrl.replace("{0}", this.imageId.toString());
-    this.editRequestSubject.next({a: url, b: credsa, header: headers});
-
+    this.http.put(url, credsa, {headers: headers}).subscribe(res => this.showEditResponse(res.json()));
   }
 
 
@@ -1246,11 +1194,6 @@ export class EditorComponent {
       this.undoDataUrl.push(dataURL);
       this.undoEditResponse.push(this.obj);
     }
-  }
-
-
-  ngOnChanges() {
-//        console.log("changes",document.getElementById('image1Element').offsetWidth);
   }
 
   ngOnInit() {
