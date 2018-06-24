@@ -252,11 +252,11 @@ export class EditorComponent {
     c = {};
 
     var c:any = {};
-    c.url = this.apiTrackId + imageId + "?with_settings=true&with_mask_url=true";
+    c.url = this.apiTrackId + imageId + "?with_settings=true&with_mask_url=true&sticky=true";
     var headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('secret', secret);
-    headers.append('x-api-key', customerId);
+    headers.append('x-api-id', customerId);
     c.headers = headers;
     this.http.get(c.url, {headers: headers}).subscribe(res => this.foundImageData(res.json()));
     return true;
@@ -1115,7 +1115,7 @@ export class EditorComponent {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('secret', this.imageSecret);
-    headers.append('x-api-key', this.showimageService.customerId);
+    headers.append('x-api-id', this.showimageService.customerId);
     var credsa = JSON.stringify(creds);
 
     this.dataURL = dataURL;
