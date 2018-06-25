@@ -56,8 +56,8 @@ export class AppComponent {
     }
 
 
-    showimageService.apiUrl = "//api.malabi.co/" ;
-    showimageService.customerId = native.getAttribute("customerId");
+    showimageService.apiUrl = "//api.v1.malabi.co/" ;
+    showimageService.apiId = native.getAttribute("apiId");
     // this.windowRef.nativeWindow.camera51App = {
     //   zone: this._ngZone,
     //   componentFnaa: (value) => this.callFromOutside(value),

@@ -154,7 +154,7 @@
     return "";
   }
 
-  var customerId = 0;
+  var apiId = 0;
   var sessionId = 0;
   var imageId = 0;
   var secret = "";
@@ -176,26 +176,26 @@
     if (e.data.id > 0) {
       imageId = e.data.id;
     }
-    if (e.data.customerId > 0) {
-      customerId = e.data.customerId;
+    if (e.data.apiId > 0) {
+      apiId = e.data.apiId;
     }
     secret = e.data.secret;
 
     try {
       data = e.data;
       if (data.hasOwnProperty("action") && data["action"] == "openEditor") {
-        ga('send', 'event', 'CLIENT', 'setTrackId', "customerId=" + customerId + ",imageId=" + e.data.imageId);
+        ga('send', 'event', 'CLIENT', 'setTrackId', "apiId=" + apiId + ",imageId=" + e.data.imageId);
 
         window.camera51Edit.zone.run(function () {
-          window.camera51Edit.setTrackId(data.customerId, data.imageId, data.secret);
+          window.camera51Edit.setTrackId(data.apiId, data.imageId, data.secret);
         });
 
         return;
       }
       if (e.data.initMalabi) {
         var a = JSON.parse(e.data.initMalabi);
-        if (a.customerId) {
-          customerId = a.customerId;
+        if (a.apiId) {
+          apiId = a.apiId;
         }
 
         showTutorial();
@@ -205,8 +205,8 @@
         });
         return;
       }
-      if (e.data.customerId && e.data.originalImageUrl) {
-        ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "customerId=" + customerId + ",imageId=" + e.data.imageId);
+      if (e.data.apiId && e.data.originalImageUrl) {
+        ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "apiId=" + apiId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setDataOriginalUrl(e.data.objInJsonString);
         });
@@ -215,14 +215,14 @@
         document.body.style.backgroundColor = e.data.backgroundColor;
       }
       if (data == 'setColor_colorBG') {
-        ga('send', 'event', 'CLIENT', 'drawFG', "customerId=" + customerId + ",imageId=" + e.data.imageId);
+        ga('send', 'event', 'CLIENT', 'drawFG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorBG')
         });
         return;
       }
       if (data == 'setColor_colorFG') {
-        ga('send', 'event', 'CLIENT', 'drawBG', "customerId=" + customerId + ",imageId=" + e.data.imageId);
+        ga('send', 'event', 'CLIENT', 'drawBG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
         window.camera51Edit.zone.run(function () {
           window.camera51Edit.setColor('colorFG')
         });

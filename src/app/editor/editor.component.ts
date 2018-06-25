@@ -47,7 +47,7 @@ export class EditorComponent {
   flagShowResult = false;
   AMOUNT_ZOOM = 0.10;
   obj:any;
-  assetsUrl = "api.malabi.co";
+  assetsUrl = "api.v1.malabi.co";
   imageSizeWidth;
   disableSaveImage;
   disableColorBG;
@@ -129,7 +129,7 @@ export class EditorComponent {
       saveImage: (value) => this.saveImage(value),
       undo: () => this.undoEdit(),
       initApp: (value) => this.initApp(value),
-      setTrackId: (customerId, imageId, secret) => this.setTrackId(customerId, imageId, secret),
+      setTrackId: (apiId, imageId, secret) => this.setTrackId(apiId, imageId, secret),
       setDataOriginalUrl: (value) => this.setDataOriginalUrl(value),
       backToEdit: () => this.backToEdit(),
       component: this
@@ -151,7 +151,7 @@ export class EditorComponent {
   }
 
   initApp(obj) {
-    this.showimageService.customerId = '';
+    this.showimageService.apiId = '';
     this.showimageService.imageId = 0;
     var newObj = JSON.parse(obj);
     this.setOutsideConfig(newObj);
@@ -174,7 +174,7 @@ export class EditorComponent {
     // if (this.showimageService.trackId != null &&
     //   this.showimageService.trackId.length > 0) {
     //
-    //   this.runGetTracker(this.showimageService.customerId, this.showimageService.trackId);
+    //   this.runGetTracker(this.showimageService.apiId, this.showimageService.trackId);
     //
     // }
   }
@@ -207,9 +207,9 @@ export class EditorComponent {
     } else {
       this.showWatermark = false;
     }
-    this.showimageService.customerId = obj.customerId;
-    if (obj.customerId && typeof obj.customerId === 'number') {
-      this.showimageService.customerId = obj.customerId;
+    this.showimageService.apiId = obj.apiId;
+    if (obj.apiId && typeof obj.apiId === 'string') {
+      this.showimageService.apiId = obj.apiId;
     }
 
     if (typeof obj.showWrapperShadow === 'boolean') {
@@ -234,7 +234,7 @@ export class EditorComponent {
     }
   }
 
-  private runGetTracker(customerId, imageId, secret) {
+  private runGetTracker(apiId, imageId, secret) {
     this.showResultImage = "none";
     this.displayWatermark = "none";
     this.maskHidden = false;
@@ -256,7 +256,8 @@ export class EditorComponent {
     var headers = new Headers();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('secret', secret);
-    headers.append('x-api-id', customerId);
+    headers.append('x-api-id', apiId);
+    headers.append('withCredentials','true');
     c.headers = headers;
     this.http.get(c.url, {headers: headers}).subscribe(res => this.foundImageData(res.json()));
     return true;
@@ -266,7 +267,7 @@ export class EditorComponent {
     this.startLoader();
     this.clearCanvas_simple();
     var newObj = JSON.parse(obj);
-    var customerId = newObj.customerId;
+    var apiId = newObj.apiId;
     var originalImageUrl = newObj.originalImageUrl;
     this.setOutsideConfig(newObj);
     if (originalImageUrl.length > 0) {
@@ -293,7 +294,7 @@ export class EditorComponent {
 
   }
 
-  setTrackId(customerId, imageId, secret) {
+  setTrackId(apiId, imageId, secret) {
 
     this.undoEditResponse = [];
     this.undoImageMaskStack = [];
@@ -303,13 +304,13 @@ export class EditorComponent {
     this.resetDrawing();
     this.initializeCanvas();
     this.countEdits = 0;
-    var customerId = customerId;
+    var apiId = apiId;
     var trackId = imageId
     // this.setOutsideConfig(newObj);
-    this.showimageService.customerId = customerId;
+    this.showimageService.apiId = apiId;
     this.showimageService.imageId = imageId;
     this.showimageService.secret = secret;
-    this.runGetTracker(customerId, imageId, secret);
+    this.runGetTracker(apiId, imageId, secret);
   }
 
 
@@ -407,7 +408,7 @@ export class EditorComponent {
       "result_image_url": this.showimageService.resultImageUrl,
       "mask_url": this.maskUrl,
       "id": imageId,
-      "customerId": this.showimageService.customerId
+      "apiId": this.showimageService.apiId
     };
     this.srcImageResult = this.defaultSrcImageResult;
     this.applyShadow = this.showimageService.applyShadow;
@@ -527,7 +528,7 @@ export class EditorComponent {
     if (this.flagShowResult) {
       return;
     }
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'undo',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'undo',"apiId="+this.showimageService.apiId +",imageId="+this.imageId);
 
     var undoDataUrl = this.undoDataUrl;
     if (this.undoEditResponse.length <= 1) {
@@ -598,7 +599,7 @@ export class EditorComponent {
   doLongZoomPressDown(type) {
     this.longPress = false;
     var that = this;
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'LongZoom'+type ,"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'LongZoom'+type ,"apiId="+this.showimageService.apiId +",imageId="+this.imageId);
 
     var repeat = function () {
       that.doZoom(type);
@@ -994,7 +995,7 @@ export class EditorComponent {
       this.backToEdit();
       return false;
     }
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'showResult',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'showResult',"apiId="+this.showimageService.apiId +",imageId="+this.imageId);
 
     var dataURL = this.canvasElement.nativeElement.toDataURL();
 
@@ -1018,7 +1019,7 @@ export class EditorComponent {
     this.requestEditImage.search(
       this.imageId,
       this.imageSecret,
-      this.obj.customerId,
+      this.obj.apiId,
       this.apiMattUrl,
       this.getMaskName(this.preversioResponseObj.mask_url),
       this.applyShadow,
@@ -1115,7 +1116,7 @@ export class EditorComponent {
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('secret', this.imageSecret);
-    headers.append('x-api-id', this.showimageService.customerId);
+    headers.append('x-api-id', this.showimageService.apiId);
     var credsa = JSON.stringify(creds);
 
     this.dataURL = dataURL;
@@ -1222,7 +1223,7 @@ export class EditorComponent {
       this.showimageService.applyTransparent = this.applyTransparent;
     }
 
-    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'saveImage',"customerId="+this.showimageService.customerId +",imageId="+this.imageId);
+    this.windowRef.nativeWindow.ga('send', 'event', 'CLIENT', 'saveImage',"apiId="+this.showimageService.apiId +",imageId="+this.imageId);
     this.runMatting(true);
     return false;
   }
