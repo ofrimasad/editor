@@ -47,7 +47,7 @@ export class EditorComponent {
   flagShowResult = false;
   AMOUNT_ZOOM = 0.10;
   obj:any;
-  assetsUrl = "api.v1.malabi.co";
+  assetsUrl = "api.malabi.co/v1";
   imageSizeWidth;
   disableSaveImage;
   disableColorBG;
@@ -91,6 +91,7 @@ export class EditorComponent {
   showWatermark:boolean = false;
   maskUrl:String;
   imageSecret:string;
+  stickinessCookie:string;
   pressTimer;
   public srcImageResult;
   public resultImageUrl;
@@ -257,9 +258,8 @@ export class EditorComponent {
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('secret', secret);
     headers.append('x-api-id', apiId);
-    headers.append('withCredentials','true');
     c.headers = headers;
-    this.http.get(c.url, {headers: headers}).subscribe(res => this.foundImageData(res.json()));
+    this.http.get(c.url, {withCredentials: true, headers: headers}).subscribe(res => this.foundImageData(res));
     return true;
   }
 
@@ -345,6 +345,16 @@ export class EditorComponent {
 
 
   foundImageData(response) {
+
+    if (response.headers){
+      //console.log(response.headers);
+      if (response.headers['Set-Cookie']) {
+        this.stickinessCookie = response.headers['Set-Cookie'];
+        //console.log(this.stickinessCookie);
+      }
+    }
+    response = response.json();
+
     var image;
 
     if (response.image) {
@@ -1058,7 +1068,7 @@ export class EditorComponent {
       that.cdr.detectChanges();
 
       if (isSaveRequest) {
-        that.windowRef.nativeWindow.callbackEdit({'url': that.resultImageUrl});
+        that.windowRef.nativeWindow.callbackEdit({'url': JSON.stringify(response.image)});
 
 //        that.openResultWindow();
       } else {
@@ -1117,6 +1127,9 @@ export class EditorComponent {
     headers.append('Content-Type', 'application/json');
     headers.append('secret', this.imageSecret);
     headers.append('x-api-id', this.showimageService.apiId);
+
+    if (this.stickinessCookie != null)
+      headers.append('Cookie', this.stickinessCookie);
     var credsa = JSON.stringify(creds);
 
     this.dataURL = dataURL;
