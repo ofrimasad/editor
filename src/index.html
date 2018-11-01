@@ -1,326 +1,298 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<!DOCTYPE html><html lang="en"><head><link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><link rel="icon" href="/favicon.ico" type="image/x-icon"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><style>body, html {
+  height: 100%;
+  margin: 0px;
+  background-color: white;
+}
+#show-tutorial-first-time {
+  display: none;
+  position: absolute;
+  top: 3%;
+  margin: 37px;
+  left: 80px;
+  width: 43%;
+  margin: auto 0;
+  padding: 20px;
+  opacity: 1;
+  background-color: rgb(97, 97, 97);
+  color: white;
+}
+.md-button {
+  padding: 0 6px 0 6px;
+  min-width: 88px;
+  border-radius: 3px;
+  cursor:  pointer !important;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration:none;
+  border: none;
+  outline: none;
+  padding: 4px;
+}
+.md-button {
+  color : currentColor;
+}
+.md-button:not([disabled]):hover {
+  background-color: rgba(158, 158, 158, 0.2);
+  padding: 4px;
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <style>
-    body, html {
-      height: 100%;
-      margin: 0px;
-      background-color: white;
-    }
-    #show-tutorial-first-time {
-      display: none;
-      position: absolute;
-      top: 3%;
-      margin: 37px;
-      left: 80px;
-      width: 43%;
-      margin: auto 0;
-      padding: 20px;
-      opacity: 1;
-      background-color: rgb(97, 97, 97);
-      color: white;
-    }
-    .md-button {
-      padding: 0 6px 0 6px;
-      min-width: 88px;
-      border-radius: 3px;
-      cursor:  pointer !important;
-      text-align: center;
-      text-transform: uppercase;
-      text-decoration:none;
-      border: none;
-      outline: none;
-      padding: 4px;
-    }
-    .md-button {
-      color : currentColor;
-    }
-    .md-button:not([disabled]):hover {
-      background-color: rgba(158, 158, 158, 0.2);
-      padding: 4px;
+}
+.md-button[disabled] {
+  color : rgba(0, 0, 0, 0.26);
+  background-color: transparent;
+}
+.animate-hide {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+  line-height:20px;
+  opacity:1;
+  padding:10px;
+  background:white;
+  position: absolute;
+  left: 0;
+  top: 10px;
+}
+.animate-hide.ng-hide {
+  left: -100%;
+  opacity:0;
+  padding:0 10px;
+}</style><script>(function (i, s, o, g, r, a, m) {
+  i['GoogleAnalyticsObject'] = r;
+  i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+  a = s.createElement(o),
+    m = s.getElementsByTagName(o)[0];
+  a.async = 1;
+  a.src = g;
+  m.parentNode.insertBefore(a, m)
+})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-    }
-    .md-button[disabled] {
-      color : rgba(0, 0, 0, 0.26);
-      background-color: transparent;
-    }
-    .animate-hide {
-      -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
-      -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
-      -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
-      transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
-      line-height:20px;
-      opacity:1;
-      padding:10px;
-      background:white;
-      position: absolute;
-      left: 0;
-      top: 10px;
-    }
-    .animate-hide.ng-hide {
-      left: -100%;
-      opacity:0;
-      padding:0 10px;
-    }
-  </style>
-  <script>
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function () {
-          (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+ga('create', 'UA-75726540-1', 'none');
+ga('send', 'startPage');</script><link href="styles.0744b9f6769c326ccd7f.bundle.css" rel="stylesheet"/></head><body><div style="text-align:center"><app-root lang="en" shadow="true"></app-root></div><div id="show-tutorial-first-time" class="animate-hide">Use <span style="color:#f44336">MARK BACKGROUND</span> to adjust the background.<br>Use <span style="color:#7cb342">MARK OBJECT</span> for the object.<br>The Background Remover will automatically make adjustments, so there is no need to be precise.<br><br><b style="color:#7cb342;float: right;margin-left: 80%;" class="md-button">GOT IT</b></div><script>var flagShowTutorial = false;
 
-    ga('create', 'UA-75726540-1', 'none');
-    ga('send', 'startPage');
-
-  </script>
-</head>
-<body>
-
-<div style="text-align:center">
-  <app-root lang="en" shadow="true">
-  </app-root>
-</div>
-<div id="show-tutorial-first-time" class="animate-hide">
-  Use <span style="color:#f44336">MARK BACKGROUND</span>  to adjust the background.<br>
-  Use <span style="color:#7cb342">MARK OBJECT</span> for the object.<br>
-  The Background Remover will automatically make adjustments, so there is no need to be precise.<br><br>
-
-  <b style="color:#7cb342;float: right;margin-left: 80%;" class="md-button">GOT IT</b>
-</div>
-
-<script>
-  var flagShowTutorial = false;
-
-  window.oncontextmenu = function (e) {
-    console.log("Right Click Disabled");
-    e.preventDefault();
-    return false;
-  };
-  function showTutorial(){
-    if(getCookie("MalabiTutorial") == ""){
-      document.getElementById("show-tutorial-first-time").style.display = 'block';
-      flagShowTutorial = true;
-    }
+window.oncontextmenu = function (e) {
+  console.log("Right Click Disabled");
+  e.preventDefault();
+  return false;
+};
+function showTutorial(){
+  if(getCookie("MalabiTutorial") == ""){
+    document.getElementById("show-tutorial-first-time").style.display = 'block';
+    flagShowTutorial = true;
   }
+}
 
-  window.addEventListener("click", function(){
-    if(flagShowTutorial){
-      //document.getElementById('show-tutorial-first-time').style.display= "none";
-      var fadeTarget = document.getElementById("show-tutorial-first-time");
-      var fadeEffect = setInterval(function () {
-        if (!fadeTarget.style.opacity) {
-          fadeTarget.style.opacity = 1;
+window.addEventListener("click", function(){
+  if(flagShowTutorial){
+    //document.getElementById('show-tutorial-first-time').style.display= "none";
+    var fadeTarget = document.getElementById("show-tutorial-first-time");
+    var fadeEffect = setInterval(function () {
+      if (!fadeTarget.style.opacity) {
+        fadeTarget.style.opacity = 1;
 
-        }
-        if (fadeTarget.style.opacity < 0.1) {
-          clearInterval(fadeEffect);
-        } else {
-          fadeTarget.style.opacity -= 0.5;
-        }
-      }, 100);
-      document.cookie = "MalabiTutorial=seen";
-      setTimeout(function () {
-        fadeTarget.style.display = "none";
-
-      }, 700);
-
-    }
-  });
-
-  function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0)==' ') {
-        c = c.substring(1);
       }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length,c.length);
-      }
-    }
-    return "";
-  }
-
-  var apiId = 0;
-  var sessionId = 0;
-  var imageId = 0;
-  var secret = "";
-  var parentDocHeight = document.documentElement.clientHeight;
-  var parentDocWidth = document.documentElement.clientWidth;
-  document.body.innerHTML += '<div id="camera51highlevelloader" style="top: 0px;display:none;position:absolute;width:100%;height:100%;cursor:wait;height:100%;z-index:34344"></div>';
-
-  var mainWindow;
-  var eventPost;
-  window.addEventListener('message', function (e) {
-
-    if (e.data.hasOwnProperty('type') && e.data.type === 'webpackOk')
-      return;
-
-    mainWindow = e.source;
-    eventPost = e;
-    if (e.data == '') return;
-    var data = '';
-    if (e.data.id > 0) {
-      imageId = e.data.id;
-    }
-    if (e.data.apiId > 0) {
-      apiId = e.data.apiId;
-    }
-    secret = e.data.secret;
-
-    try {
-      data = e.data;
-      if (data.hasOwnProperty("action") && data["action"] == "openEditor") {
-        ga('send', 'event', 'CLIENT', 'setTrackId', "apiId=" + apiId + ",imageId=" + e.data.imageId);
-
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.setTrackId(data.apiId, data.imageId, data.secret);
-        });
-
-        return;
-      }
-      if (e.data.initMalabi) {
-        var a = JSON.parse(e.data.initMalabi);
-        if (a.apiId) {
-          apiId = a.apiId;
-        }
-
-        showTutorial();
-
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.initApp(e.data.initMalabi);
-        });
-        return;
-      }
-      if (e.data.apiId && e.data.originalImageUrl) {
-        ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "apiId=" + apiId + ",imageId=" + e.data.imageId);
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.setDataOriginalUrl(e.data.objInJsonString);
-        });
-      }
-      if (e.data.backgroundColor) {
-        document.body.style.backgroundColor = e.data.backgroundColor;
-      }
-      if (data == 'setColor_colorBG') {
-        ga('send', 'event', 'CLIENT', 'drawFG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.setColor('colorBG')
-        });
-        return;
-      }
-      if (data == 'setColor_colorFG') {
-        ga('send', 'event', 'CLIENT', 'drawBG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.setColor('colorFG')
-        });
-        return;
-      }
-      if (data.hasOwnProperty("action") && data["action"] == "saveImage") {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.saveImage(e.data);
-        });
-        return;
-      }
-      if (data.hasOwnProperty("action") && data["action"] == "backToEdit") {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.backToEdit();
-        });
-        return;
-      }
-
-      if (data.hasOwnProperty("action") && data["action"] == "showResult") {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.showResult(e.data);
-        });
-        return;
-      }
-      if (data == 'zoomIn') {
-
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doZoom('in')
-        });
-        return;
-      }
-      if (data == 'zoomOut') {
-
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doZoom('out')
-        });
-        return;
-      }
-
-      if (data == 'onclickLongZoomIn') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doLongZoomPressDown('in')
-        });
-        return;
-      }
-      if (data == 'onmouseupLongZoomIn') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doLongZoomPressUp('in')
-        });
-        return;
-      }
-      if (data == 'onclickLongZoomOut') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doLongZoomPressDown('out')
-        });
-        return;
-      }
-      if (data == 'onmouseupLongZoomOut') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.doLongZoomPressUp('out')
-        });
-        return;
-      }
-
-      if (data == 'undo') {
-        window.camera51Edit.zone.run(function () {
-          window.camera51Edit.undo()
-        });
-        return;
-      }
-    } catch (e) {
-      data = 'eval() threw an exception.';
-    }
-    mainWindow.postMessage(data, eventPost.origin);
-  });
-
-
-  function getSession(url) {
-    var re = /(SID_.*)\//;
-    var n = url.match(re);
-    if (n == undefined) {
-      return null;
-    } else {
-      return n[1];
-    }
-  }
-  function callbackEdit(mes) {
-    if(mes.hasOwnProperty('loader')){
-      if(mes.loader == false){
-        document.getElementById('camera51highlevelloader').style.display= "none";
+      if (fadeTarget.style.opacity < 0.1) {
+        clearInterval(fadeEffect);
       } else {
-        document.getElementById('camera51highlevelloader').style.display= "block";
+        fadeTarget.style.opacity -= 0.5;
+      }
+    }, 100);
+    document.cookie = "MalabiTutorial=seen";
+    setTimeout(function () {
+      fadeTarget.style.display = "none";
+
+    }, 700);
+
+  }
+});
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length,c.length);
+    }
+  }
+  return "";
+}
+
+var apiId = 0;
+var sessionId = 0;
+var imageId = 0;
+var secret = "";
+var parentDocHeight = document.documentElement.clientHeight;
+var parentDocWidth = document.documentElement.clientWidth;
+document.body.innerHTML += '<div id="camera51highlevelloader" style="top: 0px;display:none;position:absolute;width:100%;height:100%;cursor:wait;height:100%;z-index:34344"></div>';
+
+var mainWindow;
+var eventPost;
+window.addEventListener('message', function (e) {
+
+  if (e.data.hasOwnProperty('type') && e.data.type === 'webpackOk')
+    return;
+
+  mainWindow = e.source;
+  eventPost = e;
+  if (e.data == '') return;
+  var data = '';
+  if (e.data.id > 0) {
+    imageId = e.data.id;
+  }
+  if (e.data.apiId > 0) {
+    apiId = e.data.apiId;
+  }
+  secret = e.data.secret;
+
+  try {
+    data = e.data;
+    if (data.hasOwnProperty("action") && data["action"] == "openEditor") {
+      ga('send', 'event', 'CLIENT', 'setTrackId', "apiId=" + apiId + ",imageId=" + e.data.imageId);
+
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.setTrackId(data.apiId, data.imageId, data.secret);
+      });
+
+      return;
+    }
+    if (e.data.initMalabi) {
+      var a = JSON.parse(e.data.initMalabi);
+      if (a.apiId) {
+        apiId = a.apiId;
       }
 
+      if (a.hasOwnProperty('show-tutorial-first-time')) {
+        document.getElementById("show-tutorial-first-time").innerHTML = a['show-tutorial-first-time'];
+      }
+
+      if (!a.hasOwnProperty('tutorial') || (a.hasOwnProperty('tutorial') && a['tutorial'] === 'true')) {
+        showTutorial();
+      }
+
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.initApp(e.data.initMalabi);
+      });
+      return;
     }
-    mainWindow.postMessage(mes, eventPost.origin);
-    return true;
+    if (e.data.apiId && e.data.originalImageUrl) {
+      ga('send', 'event', 'CLIENT', 'setDataOriginalUrl', "apiId=" + apiId + ",imageId=" + e.data.imageId);
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.setDataOriginalUrl(e.data.objInJsonString);
+      });
+    }
+    if (e.data.backgroundColor) {
+      document.body.style.backgroundColor = e.data.backgroundColor;
+    }
+    if (data == 'setColor_colorBG') {
+      ga('send', 'event', 'CLIENT', 'drawFG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.setColor('colorBG')
+      });
+      return;
+    }
+    if (data == 'setColor_colorFG') {
+      ga('send', 'event', 'CLIENT', 'drawBG', "apiId=" + apiId + ",imageId=" + e.data.imageId);
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.setColor('colorFG')
+      });
+      return;
+    }
+    if (data.hasOwnProperty("action") && data["action"] == "saveImage") {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.saveImage(e.data);
+      });
+      return;
+    }
+    if (data.hasOwnProperty("action") && data["action"] == "backToEdit") {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.backToEdit();
+      });
+      return;
+    }
+
+    if (data.hasOwnProperty("action") && data["action"] == "showResult") {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.showResult(e.data);
+      });
+      return;
+    }
+    if (data == 'zoomIn') {
+
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doZoom('in')
+      });
+      return;
+    }
+    if (data == 'zoomOut') {
+
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doZoom('out')
+      });
+      return;
+    }
+
+    if (data == 'onclickLongZoomIn') {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doLongZoomPressDown('in')
+      });
+      return;
+    }
+    if (data == 'onmouseupLongZoomIn') {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doLongZoomPressUp('in')
+      });
+      return;
+    }
+    if (data == 'onclickLongZoomOut') {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doLongZoomPressDown('out')
+      });
+      return;
+    }
+    if (data == 'onmouseupLongZoomOut') {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.doLongZoomPressUp('out')
+      });
+      return;
+    }
+
+    if (data == 'undo') {
+      window.camera51Edit.zone.run(function () {
+        window.camera51Edit.undo()
+      });
+      return;
+    }
+  } catch (e) {
+    data = 'eval() threw an exception.';
   }
-</script>
-</body>
-</html>
+  mainWindow.postMessage(data, eventPost.origin);
+});
+
+
+function getSession(url) {
+  var re = /(SID_.*)\//;
+  var n = url.match(re);
+  if (n == undefined) {
+    return null;
+  } else {
+    return n[1];
+  }
+}
+function callbackEdit(mes) {
+  if(mes.hasOwnProperty('loader')){
+    if(mes.loader == false){
+      document.getElementById('camera51highlevelloader').style.display= "none";
+    } else {
+      document.getElementById('camera51highlevelloader').style.display= "block";
+    }
+
+  }
+  mainWindow.postMessage(mes, eventPost.origin);
+  return true;
+}</script><script type="text/javascript" src="inline.318b50c57b4eba3d437b.bundle.js"></script><script type="text/javascript" src="vendor.2d6da6201d4cabd96825.bundle.js"></script><script type="text/javascript" src="main.764b71f7a026a7ab10d2.bundle.js"></script></body></html>
