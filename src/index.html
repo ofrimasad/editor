@@ -178,6 +178,9 @@ window.addEventListener('message', function (e) {
       window.camera51Edit.zone.run(function () {
         window.camera51Edit.initApp(e.data.initMalabi);
       });
+
+      mainWindow.postMessage({'initMalabi' : 'done'}, eventPost.origin);
+
       return;
     }
     if (e.data.apiId && e.data.originalImageUrl) {
